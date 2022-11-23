@@ -1,0 +1,24 @@
+[package]
+name = "emacs-wasm-loader"
+version = "0.0.1"
+authors = ["mopemope <yutaka.matsubara@gmail.com>"]
+description = "wasm loader for emacs"
+readme = "README.md"
+license = "BSD-3-Clause"
+edition = "2021"
+publish = false
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+
+[dependencies]
+emacs = "0"
+anyhow = "1"
+once_cell = "1"
+wasmtime = "3"
+wasmtime-wasi = "3"
+
+[lib]
+name = "wasm_loader"
+crate-type = ["cdylib"]
