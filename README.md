@@ -1,6 +1,6 @@
-# This gives Emacs awesome power !!
+# WASI gives Emacs awesome power !!
 
-This provides the ability to load and call `wasm` modules into Emacs.
+This provides the ability to run `WASI: WebAssembly System Interface` program on Emacs.
 
 This is still in the experimental stage.
 
@@ -23,18 +23,18 @@ Set up the following in your emacs.
 (wasm-loader/load "path/to/wasm-dir/")
 ```
 
-Use `wasm-loader/call` to call wasm.
+Use `wasm-loader/call` to run program on WASI.
 
 ```lisp
 ;; call hello.wasm
 (message (wasm-loader/call "hello" "test" "{ \"name\": \"WASM\" }"))
 ```
 
-## Emacs interface for WASM
+## Emacs interface for WASI
 
-Basically, stdio is used to communicate with WASM.
+Basically, stdio is used to communicate with program.
 
-To call wasm, use the function `wasm-loader/call`.
+To run on WASI, use the function `wasm-loader/call`.
 
 This function takes three arguments.
 
@@ -42,9 +42,9 @@ This function takes three arguments.
 2. command type argument (e.g., get, setting )
 3. command argument body (This is passed to the stdio. e.g., JSON for RPC requests)
 
-wasm module reads the 2 and 3.
+WASI program reads the 2 and 3.
 
-Here is a simple example of a module.
+Here is a simple example of a program.
 
 see `examples/hello/main.rs` .
 
@@ -96,7 +96,7 @@ fn main() {
 
 ```
 
-build wasm.
+build WASI program.
 
 ```
 $ cd example/hello
