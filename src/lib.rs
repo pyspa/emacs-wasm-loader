@@ -94,37 +94,34 @@ impl WASMEngine {
 
     pub fn call(&self, _env: &Env, name: &str, args: &[String]) -> anyhow::Result<String> {
         if let Some(module) = self.modules.get(name) {
-            let stdout = {
-                // new linker
-                let mut linker = Linker::new(&self.engine);
-                wasmtime_wasi::add_to_linker(&mut linker, |s| s)?;
+            // new linker
+            let mut linker = Linker::new(&self.engine);
+            wasmtime_wasi::add_to_linker(&mut linker, |s| s)?;
 
-                // set stdin
-                let stdin = ReadPipe::from(args[1].to_string());
-                let stdout = WritePipe::new_in_memory();
+            // set stdin
+            let stdin = ReadPipe::from(args[1].to_string());
+            let stdout = WritePipe::new_in_memory();
 
-                // build wasi ctx
-                let ctx = WasiCtxBuilder::new()
-                    //.inherit_stdio()
-                    .stdin(Box::new(stdin))
-                    .stdout(Box::new(stdout.clone()))
-                    .args(args)?
-                    .build();
+            // build wasi ctx
+            let ctx = WasiCtxBuilder::new()
+                .stdin(Box::new(stdin))
+                .stdout(Box::new(stdout.clone()))
+                .args(args)?
+                .build();
 
-                let mut store = Store::new(&self.engine, ctx);
-                linker.module(&mut store, "", module)?;
+            let mut store = Store::new(&self.engine, ctx);
+            linker.module(&mut store, "", module)?;
 
-                // debug
-                // env.message(format!("call wasm: {}.wasm", name))?;
+            // debug
+            // env.message(format!("call wasm: {}.wasm", name))?;
 
-                // call main
-                linker
-                    .get_default(&mut store, "")?
-                    .typed::<(), (), _>(&store)?
-                    .call(&mut store, ())?;
-                // drop ctx
-                stdout
-            };
+            // call main
+            linker
+                .get_default(&mut store, "")?
+                .typed::<(), (), _>(&store)?
+                .call(&mut store, ())?;
+
+            drop(store);
 
             // get captured output
             let output: Vec<u8> = stdout
