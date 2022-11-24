@@ -84,7 +84,7 @@ fn main() {
     let args: Vec<String> = std::env::args().collect();
     if !args.is_empty() {
         // get command type from args
-        let arg = args[1].clone();
+        let arg = args[0].clone();
         res.command = arg;
     }
 
